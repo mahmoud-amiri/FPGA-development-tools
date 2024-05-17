@@ -1,0 +1,3 @@
+[submodule "submodules/readme-generator"]
+	path = submodules/readme-generator
+	url = git@github.com:mahmoud-amiri/readme-generator.git
