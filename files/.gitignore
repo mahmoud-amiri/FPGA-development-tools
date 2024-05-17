@@ -1,0 +1,5 @@
+# Ignore Folder
+vivado/
+vitis/
+.Xil/
+.matool/

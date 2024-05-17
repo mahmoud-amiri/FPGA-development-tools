@@ -1,3 +1,6 @@
 [submodule "readme_generator"]
 	path = readme_generator
 	url = git@github.com:mahmoud-amiri/readme_generator.git
+[submodule "cheatsheets_for_digital_designers"]
+	path = cheatsheets_for_digital_designers
+	url = git@github.com:mahmoud-amiri/cheatsheets_for_digital_designers.git

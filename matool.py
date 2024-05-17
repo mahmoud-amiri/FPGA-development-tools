@@ -4,7 +4,7 @@ import argparse
 from functions.init import init
 from functions.commit import commit
 from functions.template import template,get_template
-
+from functions.cheatsheet import cheatsheet
 
 
 def main():
@@ -21,6 +21,8 @@ def main():
     template_parser.add_argument('-verilog', dest='template_type', action='store_const', const='verilog', help='Verilog template')
     template_parser.add_argument('template_name', type=str, help='Name of the template to copy')
 
+    cheatsheet_parser = subparsers.add_parser('cheatsheet', help='Open README.md in VS Code')  # Add the new command
+
     args = parser.parse_args()
 
     if args.command == 'init':
@@ -29,6 +31,8 @@ def main():
         commit(args.message)
     elif args.command == 'template':
         template(args.template_type, args.template_name)
+    elif args.command == 'cheatsheet':
+        cheatsheet()    
     else:
         parser.print_help()
 
