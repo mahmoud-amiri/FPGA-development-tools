@@ -1,0 +1,107 @@
+module:
+    // Module declaration with parameters
+    module EntityName #(
+        parameter n = 16, // Default value 16
+        parameter m = 32  // Default value 32
+    )(
+        input FirstPort,                     // Single bit input
+        output SecondPort,                   // Single bit output
+        inout [n-1:0] ThirdPort              // Bi-directional bus with size defined by parameter 'n'
+    );
+
+        // Signal declarations
+        wire wire1;                         // Single wire signal
+        wire [m-1:0] bus;                   // Bus signal with size defined by parameter 'm'
+
+        // Continuous assignments
+        assign wire1 = FirstPort;           // Assignment using wire
+        assign SecondPort = wire1;
+        assign bus = {m{1'b0}};             // Initialize bus to all zeros
+
+    endmodule
+
+
+
+always:
+    always @(posedge clk) begin
+        if (reset) begin
+            data_out <= 8'b00000000;  // Reset data output to all zeros
+        end else begin
+            data_out <= data_in;     // Transfer input to output if not reset
+        end
+    end
+
+
+
+if:
+    if <condition_A> begin
+        // do something
+    end else if <condition-B> begin
+        // do something
+    end else begin
+        // Default condition
+    end
+
+
+case:
+    case (state)
+        IDLE: 
+            led <= 0;     
+        RUNNING: 
+            led <= 1; 
+        ERROR: 
+            led <= 0;    
+        default: 
+            led <= 1'bx;  
+    endcase
+
+switch:
+    assign led = (switch == 1) ? 1 : 0;
+
+doc:
+    //doc init
+
+    //#### Description
+    //Provide a detailed description of the module here. Explain its purpose, functionality, and any relevant background information.
+    //
+    //#### Ports
+    //| Port Name    | Direction | Width | Description                               |
+    //|--------------|-----------|-------|-------------------------------------------|
+    //| `port1`      | input     | 1     | Description of port1                      |
+    //| `port2`      | output    | 8     | Description of port2                      |
+    //| `port3`      | inout     | 16    | Description of port3                      |
+    //
+
+    //#### Parameters
+    //| Parameter Name | Default Value | Description                               |
+    //|----------------|---------------|-------------------------------------------|
+    //| `PARAM1`       | 10            | Description of PARAM1                     |
+    //| `PARAM2`       | 4             | Description of PARAM2                     |
+    //
+
+    //#### Internal Signals
+    //| Signal Name    | Width | Description                               |
+    //|----------------|-------|-------------------------------------------|
+    //| `signal1`      | 1     | Description of signal1                    |
+    //| `signal2`      | 8     | Description of signal2                    |
+    //
+    //#### Submodules
+    //| Submodule Name | Instance Name | Description                               |
+    //|----------------|---------------|-------------------------------------------|
+    //| `submodule1`   | `instance1`   | Description of submodule1                 |
+    //| `submodule2`   | `instance2`   | Description of submodule2                 |
+    //
+    //#### Functionality
+    //Provide a detailed description of the module's functionality. Include information about how it processes inputs, generates outputs, and any internal operations or state changes.
+    //
+    //#### State Machine (if applicable)
+    //Describe the state machine used within the module, including:
+    //- States
+    //- Transitions
+    //- Conditions for transitions
+    //- Actions performed in each state
+    //
+    //#### Timing Diagrams
+    //Include any relevant timing diagrams that illustrate the module's operation. Provide explanations for each diagram.
+
+    //doc end
