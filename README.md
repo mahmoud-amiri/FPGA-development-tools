@@ -12,6 +12,7 @@
   - [Usage](#usage)
     - [Initialize](#initialize)
     - [Commit](#commit)
+    - [Upsub](#upsub)
     - [Template](#template)
     - [Cheatsheet](#cheatsheet)
     - [License](#license)
@@ -97,6 +98,20 @@ matool commit <message>
 ```
 
 `message`: The commit message.
+
+### Upsub
+
+Update the submodule to the latest version.
+
+```sh
+matool upsub <submodule_path> [--main_repo_path <main_repo_path>] [--submodule_branch <submodule_branch>] [--main_repo_branch <main_repo_branch>]
+```
+
+`submodule_path`: The path to the submodule.
+`--main_repo_path`: The path to the main repository (default is the current directory).
+`--submodule_branch`: The branch you want to update in the submodule (default is main).
+`--main_repo_branch`: The branch you want to update in the main repository (default is main).
+This command fetches the latest changes in the submodule, updates it to the specified branch, and then commits and pushes the updated submodule reference in the main repository.
 
 ### Template
 

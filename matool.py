@@ -1,6 +1,6 @@
 import argparse
 from functions.init import init
-from functions.commit import commit
+from functions.git import commit, update_submodule
 from functions.template import template, get_template
 from functions.cheatsheet import cheatsheet
 from functions.comment_readme import auto_comment_gen, auto_readme_gen
@@ -29,6 +29,13 @@ def main():
     readme_parser.add_argument('input_path', type=str, help='Path to the input file')
     readme_parser.add_argument('output_path', type=str, help='Path to the output file')
 
+    submodule_parser = subparsers.add_parser('upsub', help='Update the submodule to the latest version')
+    submodule_parser.add_argument('submodule_path', type=str, help='Path to the submodule')
+    submodule_parser.add_argument('--main_repo_path', type=str, default='.', help='Path to the main repository')
+    submodule_parser.add_argument('--submodule_branch', type=str, default='main', help='Branch to update in the submodule')
+    submodule_parser.add_argument('--main_repo_branch', type=str, default='main', help='Branch to update in the main repository')
+
+
     args = parser.parse_args()
 
     if args.command == 'init':
@@ -43,6 +50,8 @@ def main():
         auto_comment_gen(args.input_path, args.output_path)
     elif args.command == 'readme':
         auto_readme_gen(args.input_path, args.output_path)
+    elif args.command == 'upsub':
+        update_submodule(args.submodule_path, args.main_repo_path, args.submodule_branch, args.main_repo_branch)
     else:
         parser.print_help()
 
