@@ -3,7 +3,7 @@ import sys
 import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'readme_generator'))
-from readme_generator.readme_gen import generate_readme
+from readme_generator.functions.readme_gen import generate_readme
 
 def commit(message):
     try:

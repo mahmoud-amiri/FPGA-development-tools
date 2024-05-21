@@ -95,11 +95,13 @@ doc:
     //Provide a detailed description of the module's functionality. Include information about how it processes inputs, generates outputs, and any internal operations or state changes.
     //
     //#### State Machine (if applicable)
-    //Describe the state machine used within the module, including:
-    //- States
-    //- Transitions
-    //- Conditions for transitions
-    //- Actions performed in each state
+    //| State Name | Description           | Transitions To | Conditions for Transition       | Actions Performed                |
+    //|------------|-----------------------|----------------|---------------------------------|----------------------------------|
+    //| IDLE | Description for IDLE |  |  |  |
+    //| READ | Description for READ |  |  |  |
+    //| PROCESS | Description for PROCESS |  |  |  |
+    //| WRITE | Description for WRITE |  |  |  |
+    //| ERROR | Description for ERROR |  |  |  |
     //
     //#### Timing Diagrams
     //Include any relevant timing diagrams that illustrate the module's operation. Provide explanations for each diagram.
