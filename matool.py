@@ -1,11 +1,9 @@
 import argparse
-
-
 from functions.init import init
 from functions.commit import commit
-from functions.template import template,get_template
-from functions.cheatsheet import cheatsheet
-
+from functions.template import template, get_template
+#from functions.cheatsheet import cheatsheet
+from functions.comment_readme import auto_comment_gen, auto_readme_gen
 
 def main():
     parser = argparse.ArgumentParser(description='Matool CLI')
@@ -23,6 +21,14 @@ def main():
 
     cheatsheet_parser = subparsers.add_parser('cheatsheet', help='Open README.md in VS Code')  # Add the new command
 
+    comment_parser = subparsers.add_parser('comment', help='Add comments to the input file and save to output file')
+    comment_parser.add_argument('input_path', type=str, help='Path to the input file')
+    comment_parser.add_argument('output_path', type=str, help='Path to the output file')
+
+    readme_parser = subparsers.add_parser('readme', help='Read the input file and save to output file')
+    readme_parser.add_argument('input_path', type=str, help='Path to the input file')
+    readme_parser.add_argument('output_path', type=str, help='Path to the output file')
+
     args = parser.parse_args()
 
     if args.command == 'init':
@@ -32,7 +38,12 @@ def main():
     elif args.command == 'template':
         template(args.template_type, args.template_name)
     elif args.command == 'cheatsheet':
-        cheatsheet()    
+        #cheatsheet()
+        print("hi")
+    elif args.command == 'comment':
+        auto_comment_gen(args.input_path, args.output_path)
+    elif args.command == 'readme':
+        auto_readme_gen(args.input_path, args.output_path)
     else:
         parser.print_help()
 

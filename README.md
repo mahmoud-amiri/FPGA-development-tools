@@ -35,7 +35,7 @@ The matool CLI provides the following commands:
 Initialize matool in the current directory.
 
 ```sh
-python matool.py init
+matool init
 ```
 
 ### Commit
@@ -43,7 +43,7 @@ python matool.py init
 Commit changes and push to git with a commit message.
 
 ```sh
-python matool.py commit <message>
+matool commit <message>
 ```
 
 `message`: The commit message.
@@ -53,7 +53,7 @@ python matool.py commit <message>
 Copy a template to the clipboard.
 
 ```sh
-python matool.py template [-vhdl | -verilog] <template_name>
+matool template [-vhdl | -verilog] <template_name>
 ```
 
 `-vhdl`: Use the VHDL template.
@@ -65,7 +65,7 @@ python matool.py template [-vhdl | -verilog] <template_name>
 Open README.md in VS Code.
 
 ```sh
-python matool.py cheatsheet
+matool cheatsheet
 
 ```
 
