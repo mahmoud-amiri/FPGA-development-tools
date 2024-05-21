@@ -2,7 +2,7 @@ import argparse
 from functions.init import init
 from functions.commit import commit
 from functions.template import template, get_template
-#from functions.cheatsheet import cheatsheet
+from functions.cheatsheet import cheatsheet
 from functions.comment_readme import auto_comment_gen, auto_readme_gen
 
 def main():
@@ -38,8 +38,7 @@ def main():
     elif args.command == 'template':
         template(args.template_type, args.template_name)
     elif args.command == 'cheatsheet':
-        #cheatsheet()
-        print("hi")
+        cheatsheet()
     elif args.command == 'comment':
         auto_comment_gen(args.input_path, args.output_path)
     elif args.command == 'readme':
