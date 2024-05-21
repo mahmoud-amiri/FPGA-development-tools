@@ -7,7 +7,11 @@ from readme_generator.functions.readme_gen import generate_readme
 
 def commit(message):
     try:
-        generate_readme("./project_structure.yaml")
+        if os.path.exists("./project_structure.yaml"):
+            generate_readme("./project_structure.yaml")
+        else:
+            print("Project structure file (project_structure.yaml) not found. README not generated.")
+        
         subprocess.run(['git', 'rev-parse', '--is-inside-work-tree'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(['git', 'add', '.'], check=True)
         subprocess.run(['git', 'commit', '-m', message], check=True)

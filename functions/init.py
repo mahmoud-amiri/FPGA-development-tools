@@ -1,6 +1,6 @@
 import os
 import shutil
-import subprocess
+
 
 def init():
     # Ensure the current directory is a Git repository
