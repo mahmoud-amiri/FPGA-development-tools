@@ -5,7 +5,8 @@ import shutil
 def init():
     # Ensure the current directory is a Git repository
     if not os.path.isdir('.git'):
-        raise AssertionError("The current directory is not a Git repository.")
+        print("The current directory is not a Git repository.")
+        #raise AssertionError("The current directory is not a Git repository.")
 
     # Create necessary directories
     directories = ['.matool', 'hdl', 'bd', 'cons', 'hls', 'script', 'sdk', 'user_ip', 'xil_ip', 'tb']

@@ -64,7 +64,7 @@ pip install -r requirements.txt
 ```
 
 3. Add the directory to the environment variable.
-4. Adjust the path inside the matool.bat file located in the same folder as matool.py.
+4. Adjust the path inside the `matool.bat` and `config.cfg` files located in the same folder as `matool.py`.
 
 Once these steps are completed, you can execute matool from the terminal in any directory within your system.
 

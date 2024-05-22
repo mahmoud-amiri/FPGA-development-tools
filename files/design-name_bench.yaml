@@ -1,0 +1,18 @@
+uvmf:
+  benches:
+    <design-name>:   
+    
+      active_passive: #define active or passive agents
+      - bfm_name: <design-name>_<interface-name>_agent
+        value: <ACTIVE or PASSIVE>   #ACTIVE :generating stimulus and monitoring the signal interface #PASSIVE :will not drive stimulus as it only monitors DUT output signals
+      
+    
+      clock_half_period: <5ns :top level testbench clock period>  
+      clock_phase_offset: <9ns top level testbench clock phase offset>
+    
+      interface_params: []  #Enables user to specify how any underlying BFMs should be parameterized
+    
+      reset_assertion_level: 'False'  
+      reset_duration: 200ns         
+    
+      top_env: <design-name>
