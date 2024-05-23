@@ -2,7 +2,7 @@ import shutil
 import subprocess
 
 def copy_and_run_questa_sim_bat():
-    src = f"./script/questa_sim.bat"
+    src = f"./script/invoke_questa.bat"
     with open(src, 'r') as f:
         first_line = f.readline().strip()
         if first_line.startswith('::'):
@@ -16,4 +16,11 @@ def copy_and_run_questa_sim_bat():
     
     # Run the copied file
     subprocess.run(dst, shell=True)
+    process = subprocess.Popen(["cmd", "/c", "invoke_questa.bat"], cwd=f"./tb/uvmf/project_benches/{design_name}/sim", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    stdout, stderr = process.communicate()
+    
+    print("STDOUT:")
+    print(stdout)
+    print("STDERR:")
+    print(stderr)
 

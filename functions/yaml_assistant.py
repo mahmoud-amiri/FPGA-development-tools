@@ -414,8 +414,11 @@ pause"""
     def write_batch_script_file(self):
         script_content = self.generate_batch_script_content()
         design_name = self.output_dict["design_name"]
-        file_name = f"{design_name}_generate_uvmf.bat"
-        with open(f"./tb/yaml/{file_name}", 'w') as file:
+        script_directory = os.path.join('.', 'script')
+        os.makedirs(script_directory, exist_ok=True)
+        script_file_path = os.path.join(script_directory, 'run_yaml_uvmf_scripts.bat')
+        file_name = f"run_yaml_uvmf_scripts.bat"
+        with open(script_file_path, 'w') as file:
             file.write(script_content)
             print(f"Written: {file_name}")  
 
@@ -437,25 +440,49 @@ pause"""
                     uvmf_home = line.split('=')[1].strip()
                 elif line.startswith('PYTHON_27_DIR='):
                     python27_home = line.split('=')[1].strip()
-
+        script_directory = os.path.join('.', 'script')
+        os.makedirs(script_directory, exist_ok=True)
+        script_file_path = os.path.join(script_directory, 'run_bcr_sim.bat')
         design_name = self.output_dict["design_name"]
-        script_content = f"""REM {design_name}
+        script_content = f""":: {design_name}
 @set QUESTA_ROOT={questa_root}
 @set UVMF_HOME={uvmf_home}
 {os.path.join(python27_home , 'python')} {os.path.join(uvmf_home, 'scripts', 'uvmf_bcr.py')} "questa live:TRUE enable_trlog:True wave_file:wave.do code_cov_enable:1 code_cov_types:sbfec code_cov_target:/hdl_top/DUT. extra_do:"onbreak {{resume}}; set PrefSource (OpenOnBreak) 0; radix hex showbase; "
 pause"""
         
-        with open(f"./script/run_bcr_sim.bat", 'w') as file:
+        with open(script_file_path, 'w') as file:
             file.write(script_content)
             print(f"Written: run_bcr_sim.bat")
 
     def generate_invoke_questa_script_content(self):
+        # Read QUESTA_ROOT and UVMF_HOME from config.cf file
+        current_script_path = os.path.abspath(__file__)
+        current_script_directory = os.path.dirname(current_script_path)
+        config_file_path = f"{current_script_directory}/../config.cfg"
+
+        questa_root = None
+        uvmf_home = None
+
+        with open(config_file_path, 'r') as config_file:
+            config_lines = config_file.readlines()
+            for line in config_lines:
+                if line.startswith('QUESTA_HOME='):
+                    questa_root = line.split('=')[1].strip()
+                elif line.startswith('UVMF_HOME='):
+                    uvmf_home = line.split('=')[1].strip()
+                elif line.startswith('PYTHON_27_DIR='):
+                    python27_home = line.split('=')[1].strip()
+
         design_name = self.output_dict["design_name"]
-        script_content = f"""REM {design_name}
+        script_content = f""":: {design_name}
+@set QUESTA_ROOT={questa_root}
+@set UVMF_HOME={uvmf_home}
 vsim -i -do "do compile.do; do run.do
 pause"""
-        
-        with open(f"./script/invoke_questa.bat", 'w') as file:
+        script_directory = os.path.join('.', 'script')
+        os.makedirs(script_directory, exist_ok=True)
+        script_file_path = os.path.join(script_directory, 'invoke_questa.bat')
+        with open(script_file_path, 'w') as file:
             file.write(script_content)
             print(f"Written: invoke_questa.bat")
 
