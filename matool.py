@@ -5,6 +5,8 @@ from functions.template import template, get_template
 from functions.cheatsheet import cheatsheet
 from functions.comment_readme import auto_comment_gen, auto_readme_gen
 from functions.yaml_assistant import yaml_assistant
+from functions.questa import copy_and_run_questa_sim_bat
+from functions.uvmf import copy_and_run_uvmf_bat
 def main():
     parser = argparse.ArgumentParser(description='Matool CLI')
     subparsers = parser.add_subparsers(dest='command')
@@ -40,6 +42,8 @@ def main():
     readme_parser.add_argument('output_path', type=str, help='Path to the output file')
 
     yaml_parser = subparsers.add_parser('yaml', help='Run the yaml assistant')
+    questa_parser = subparsers.add_parser('questa', help='Run the questa')
+    uvmf_parser = subparsers.add_parser('uvmf', help='Run the uvmf python script for generating the testbench')
 
     args = parser.parse_args()
 
@@ -59,7 +63,11 @@ def main():
     elif args.command == 'readme':
         auto_readme_gen(args.input_path, args.output_path)
     elif args.command == 'yaml':
-        yaml_assistant()    
+        yaml_assistant()   
+    elif args.command == 'questa':
+        copy_and_run_questa_sim_bat()  
+    elif args.command == 'uvmf':
+        copy_and_run_uvmf_bat()          
     else:
         parser.print_help()
 
