@@ -2,32 +2,33 @@ import re
 import yaml
 import json
 import os
-
-class HardwareComponent:
-    def __init__(self):
-        self.parameters = []
-        self.ports = []
-
-    def add_parameter(self, line_no, name, input_type, size, description, default_value):
-        self.parameters.append({
-            'name': name,
-            'type': 'int',
-            'value': default_value.strip(',')
-        })
-
-    def add_input(self, line_no, name, input_type, size, description):
-        self.ports.append({
-            'name': name,
-            'dir': 'input',
-            'width': size
-        })
-
-    def add_output(self, line_no, name, input_type, size, description):
-        self.ports.append({
-            'name': name,
-            'dir': 'output',
-            'width': size
-        })
+from readme_generator.functions.structure_recognizer import StructureRecognizer
+from readme_generator.functions.hardware_component import HardwareComponent
+#class HardwareComponent:
+#    def __init__(self):
+#        self.parameters = []
+#        self.ports = []
+#
+#    def add_parameter(self, line_no, name, input_type, size, description, default_value):
+#        self.parameters.append({
+#            'name': name,
+#            'type': 'int',
+#            'value': default_value.strip(',')
+#        })
+#
+#    def add_input(self, line_no, name, input_type, size, description):
+#        self.ports.append({
+#            'name': name,
+#            'dir': 'input',
+#            'width': size
+#        })
+#
+#    def add_output(self, line_no, name, input_type, size, description):
+#        self.ports.append({
+#            'name': name,
+#            'dir': 'output',
+#            'width': size
+#        })
 
 class YamlProcessor:
     def __init__(self, file_path):
@@ -40,67 +41,73 @@ class YamlProcessor:
     
 
     def recognize_ports_structure(self, code_lines, hardware_component):
-        patterns = [
-            (re.compile(r'\binput\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'input array', '{size}-bit input array for <1>', hardware_component.add_input),
-            (re.compile(r'\binput\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'input array', '({size} + 1)-bit input array for <2>', hardware_component.add_input),
-            (re.compile(r'\binput\s+(\w+)\s*,'), 'input single_bit', '{size}-bit input for <3>', hardware_component.add_input),
-            (re.compile(r'\binput\s+reg\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'input array', '{size}-bit input reg array for <4>', hardware_component.add_input),
-            (re.compile(r'\binput\s+logic\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'input array', '{size}-bit input logic array for <5>', hardware_component.add_input),
-            (re.compile(r'\binput\s+bit\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'input array', '{size}-bit input bit array for <6>', hardware_component.add_input),
-            (re.compile(r'\binput\s+wire\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'input array', '{size}-bit input wire array for <7>', hardware_component.add_input),
-            (re.compile(r'\binput\s+reg\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'input array', '({size} + 1)-bit input reg array for <8>', hardware_component.add_input),
-            (re.compile(r'\binput\s+logic\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'input array', '({size} + 1)-bit input logic array for <9>', hardware_component.add_input),
-            (re.compile(r'\binput\s+bit\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'input array', '({size} + 1)-bit input bit array for <10>', hardware_component.add_input),
-            (re.compile(r'\binput\s+wire\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'input array', '({size} + 1)-bit input wire array for <11>', hardware_component.add_input),
-            (re.compile(r'\binput\s+reg\s+(\w+)\s*,'), 'input single_bit', '{size}-bit input reg for <12>', hardware_component.add_input),
-            (re.compile(r'\binput\s+logic\s+(\w+)\s*,'), 'input single_bit', '{size}-bit input logic for <13>', hardware_component.add_input),
-            (re.compile(r'\binput\s+bit\s+(\w+)\s*,'), 'input single_bit', '{size}-bit input bit for <14>', hardware_component.add_input),
-            (re.compile(r'\binput\s+wire\s+(\w+)\s*,'), 'input single_bit', '{size}-bit input wire for <15>', hardware_component.add_input),
-
-            (re.compile(r'\boutput\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'output array', '{size}-bit output array for <16>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'output array', '({size} + 1)-bit output array for <17>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+(\w+)\s*,'), 'output single_bit', '{size}-bit output single bit for <18>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+reg\s+(\w+)\s*,'), 'output single_bit', '{size}-bit output reg for <19>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+logic\s+(\w+)\s*,'), 'output single_bit', '{size}-bit output logic for <20>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+bit\s+(\w+)\s*,'), 'output single_bit', '{size}-bit output bit for <21>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+wire\s+(\w+)\s*,'), 'output single_bit', '{size}-bit output wire for <22>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+reg\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'output array', '{size}-bit output reg array for <23>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+logic\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'output array', '{size}-bit output logic array for <24>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+bit\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'output array', '{size}-bit output bit array for <25>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+wire\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'output array', '{size}-bit output wire array for <26>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+reg\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'output array', '({size} + 1)-bit output reg array for <27>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+logic\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'output array', '({size} + 1)-bit output logic array for <28>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+bit\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'output array', '({size} + 1)-bit output bit array for <29>', hardware_component.add_output),
-            (re.compile(r'\boutput\s+wire\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'output array', '({size} + 1)-bit output wire array for <30>', hardware_component.add_output),
-
-            (re.compile(r'\bparameter\s+(\w+)\s*=\s*([^\s;]+)\s*,'), 'parameter', 'parameter {name} with default value {default_value}', hardware_component.add_parameter)
-        ]
-
-        for pattern_info in patterns:
-            pattern, input_type, description_format, add_method = pattern_info
-            for line_no, line in enumerate(code_lines, start=1):
-                match = pattern.search(line)
-                if match:
-                    if 'array' in input_type:
-                        size = match.group(1)
-                        name = match.group(2)
-                        size = re.sub(r'-\d+', '', size)
-                    elif input_type == 'parameter':
-                        size = '1'
-                        name = match.group(1)
-                        default_value = match.group(2)
-                    else:
-                        size = '1'
-                        name = match.group(1)
-
-                    description = description_format.format(size=size.strip() if isinstance(size, str) else size, name=name, default_value=default_value if input_type == 'parameter' else "")
-
-                    if input_type == 'parameter':
-                        add_method(line_no, name, input_type, size, description, default_value)
-                    else:
-                        add_method(line_no, name, input_type, size, description)
-        print(hardware_component.parameters)
-        print(hardware_component.ports)
+        #hardware_component = HardwareComponent()
+        structure_recognizer = StructureRecognizer(hardware_component)
+        structure_recognizer.recognize_ports_structure(code_lines)
+        hardware_component.remove_duplicate_line_entries()
+        hardware_component.update_size_in_comment()
+        #hardware_component.print_component()
+        #patterns = [
+        #    (re.compile(r'\binput\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'input array', '{size}-bit input array for <1>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'input array', '({size} + 1)-bit input array for <2>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+(\w+)\s*,'), 'input single_bit', '{size}-bit input for <3>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+reg\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'input array', '{size}-bit input reg array for <4>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+logic\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'input array', '{size}-bit input logic array for <5>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+bit\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'input array', '{size}-bit input bit array for <6>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+wire\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'input array', '{size}-bit input wire array for <7>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+reg\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'input array', '({size} + 1)-bit input reg array for <8>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+logic\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'input array', '({size} + 1)-bit input logic array for <9>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+bit\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'input array', '({size} + 1)-bit input bit array for <10>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+wire\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'input array', '({size} + 1)-bit input wire array for <11>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+reg\s+(\w+)\s*,'), 'input single_bit', '{size}-bit input reg for <12>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+logic\s+(\w+)\s*,'), 'input single_bit', '{size}-bit input logic for <13>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+bit\s+(\w+)\s*,'), 'input single_bit', '{size}-bit input bit for <14>', hardware_component.add_input),
+        #    (re.compile(r'\binput\s+wire\s+(\w+)\s*,'), 'input single_bit', '{size}-bit input wire for <15>', hardware_component.add_input),
+#
+        #    (re.compile(r'\boutput\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'output array', '{size}-bit output array for <16>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'output array', '({size} + 1)-bit output array for <17>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+(\w+)\s*,'), 'output single_bit', '{size}-bit output single bit for <18>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+reg\s+(\w+)\s*,'), 'output single_bit', '{size}-bit output reg for <19>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+logic\s+(\w+)\s*,'), 'output single_bit', '{size}-bit output logic for <20>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+bit\s+(\w+)\s*,'), 'output single_bit', '{size}-bit output bit for <21>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+wire\s+(\w+)\s*,'), 'output single_bit', '{size}-bit output wire for <22>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+reg\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'output array', '{size}-bit output reg array for <23>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+logic\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'output array', '{size}-bit output logic array for <24>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+bit\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'output array', '{size}-bit output bit array for <25>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+wire\s+\[([^\]]+)-\d+:\d+\]\s+(\w+)\s*,'), 'output array', '{size}-bit output wire array for <26>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+reg\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'output array', '({size} + 1)-bit output reg array for <27>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+logic\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'output array', '({size} + 1)-bit output logic array for <28>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+bit\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'output array', '({size} + 1)-bit output bit array for <29>', hardware_component.add_output),
+        #    (re.compile(r'\boutput\s+wire\s+\[([^\]]+):0\]\s+(\w+)\s*,'), 'output array', '({size} + 1)-bit output wire array for <30>', hardware_component.add_output),
+#
+        #    (re.compile(r'\bparameter\s+(\w+)\s*=\s*([^\s;]+)\s*,'), 'parameter', 'parameter {name} with default value {default_value}', hardware_component.add_parameter)
+        #]
+#
+        #for pattern_info in patterns:
+        #    pattern, input_type, description_format, add_method = pattern_info
+        #    for line_no, line in enumerate(code_lines, start=1):
+        #        match = pattern.search(line)
+        #        if match:
+        #            if 'array' in input_type:
+        #                size = match.group(1)
+        #                name = match.group(2)
+        #                size = re.sub(r'-\d+', '', size)
+        #            elif input_type == 'parameter':
+        #                size = '1'
+        #                name = match.group(1)
+        #                default_value = match.group(2)
+        #            else:
+        #                size = '1'
+        #                name = match.group(1)
+#
+        #            description = description_format.format(size=size.strip() if isinstance(size, str) else size, name=name, default_value=default_value if input_type == 'parameter' else "")
+#
+        #            if input_type == 'parameter':
+        #                add_method(line_no, name, input_type, size, description, default_value)
+        #            else:
+        #                add_method(line_no, name, input_type, size, description)
+        #print(hardware_component.parameters)
+        #print(hardware_component.ports)
 
     def convert_to_desired_format(self):
         design_name = list(self.parsed_yaml.keys())[0]
@@ -111,28 +118,49 @@ class YamlProcessor:
         for interface_name, details in interfaces.items():
             hardware_component = HardwareComponent()
             code_lines = details['parameters'] + details['ports']
+            #self.recognize_ports_structure(code_lines, hardware_component)
             self.recognize_ports_structure(code_lines, hardware_component)
-            
             interface_dict = {
                 "interface_name": interface_name,
-                "parameters": hardware_component.parameters,
-                "ports": hardware_component.ports
+                "parameters": [],
+                "ports": []
             }
+            for entry in hardware_component.component["inputs"]:
+                interface_dict["ports"].append({
+                    'name': entry["name"],
+                    'dir': 'output',
+                    'width': entry["size"]
+                })  
+
+            for entry in hardware_component.component["outputs"]:
+                interface_dict["ports"].append({
+                    'name': entry["name"],
+                    'dir': 'input',
+                    'width': entry["size"]
+                })
+
+            for entry in hardware_component.component["parameters"]:
+                interface_dict["parameters"].append({
+                    'name': entry["name"],
+                    'type': 'int',
+                    'value': entry["default_value"].strip(',')
+                })
+
             output_dict["interfaces"].append(interface_dict)
-        
+            print (output_dict)
         return output_dict
 
-    def switch_directions(self, data_dict):
-        for interface in data_dict["interfaces"]:
-            for port in interface["ports"]:
-                if port["dir"] == "input":
-                    port["dir"] = "output"
-                elif port["dir"] == "output":
-                    port["dir"] = "input"
+    #def switch_directions(self, data_dict):
+    #    for interface in data_dict["interfaces"]:
+    #        for port in interface["ports"]:
+    #            if port["dir"] == "input":
+    #                port["dir"] = "output"
+    #            elif port["dir"] == "output":
+    #                port["dir"] = "input"
 
     def process(self):
         formatted_output = self.convert_to_desired_format()
-        self.switch_directions(formatted_output)
+        #self.switch_directions(formatted_output)
         return formatted_output
 
 
@@ -174,7 +202,7 @@ class YamlWriter:
                             {
                                 "name": port['name'],
                                 "dir": port['dir'],
-                                "width": f"{design_name}_{interface_name}_{port['width']}" if not port['width'].isdigit() else port['width']
+                                "width": f"{design_name}_{interface_name}_{port['width']}" if not str(port['width']).isdigit() else port['width']
 
 
                             }
@@ -194,7 +222,7 @@ class YamlWriter:
                         "transaction_vars": [
                             {
                                 "name": port['name'],
-                                "type": f"bit [{design_name}_{interface_name}_{port['width']}-1:0]" if not port['width'].isdigit() else f"bit [{port['width']}-1:0]",
+                                "type": f"bit [{design_name}_{interface_name}_{port['width']}-1:0]" if not str(port['width']).isdigit() else f"bit [{port['width']}-1:0]",
                                 "iscompare": "True",
                                 "isrand": "True"
                             }
