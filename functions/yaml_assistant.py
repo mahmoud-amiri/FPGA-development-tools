@@ -300,7 +300,7 @@ class YamlWriter:
     def write_env_yaml_file(self):
         design_name = self.output_dict["design_name"]
         yaml_content = self.generate_env_yaml(design_name)
-        file_name = f"{design_name}_env.yaml"
+        file_name = f"{design_name}_environment.yaml"
         with open(f"./tb/yaml/{file_name}", 'w') as file:
             yaml.dump(yaml_content, file, sort_keys=False)
             print(f"Written: {file_name}")  
@@ -333,7 +333,7 @@ class YamlWriter:
     def write_benches_yaml_file(self):
         benches_yaml = self.generate_benches_yaml()
         design_name = self.output_dict["design_name"]
-        file_name = f"{design_name}_benches.yaml"
+        file_name = f"{design_name}_bench.yaml"
         with open(f"./tb/yaml/{file_name}", 'w') as file:
             yaml.dump(benches_yaml, file, sort_keys=False)
             print(f"Written: {file_name}")  
@@ -388,16 +388,26 @@ class YamlWriter:
                     questa_root = line.split('=')[1].strip()
                 elif line.startswith('UVMF_HOME='):
                     uvmf_home = line.split('=')[1].strip()
+                elif line.startswith('PYTHON_27_DIR='):
+                    python27_home = line.split('=')[1].strip()
 
         # Generate the script content
         design_name = self.output_dict["design_name"]
-        interface_yaml_file = f"{design_name}_interface.yaml"
+        interface_yaml_files = []
+        for interface in self.output_dict["interfaces"]:
+            interface_name = interface["interface_name"]
+            interface_yaml_file = f"{design_name}_{interface_name}_interface.yaml"
+            interface_yaml_files.append(interface_yaml_file)
+
         predictor_yaml_file = f"{design_name}_predictor.yaml"
         environment_yaml_file = f"{design_name}_environment.yaml"
         bench_yaml_file = f"{design_name}_bench.yaml"
+        interface_yaml_files.append(predictor_yaml_file)
+        interface_yaml_files.append(environment_yaml_file)
+        interface_yaml_files.append(bench_yaml_file)
         script_content = f"""@set QUESTA_ROOT={questa_root}
 @set UVMF_HOME={uvmf_home}
-{os.path.join(questa_root, 'bin', 'python')} {os.path.join(uvmf_home, 'scripts', 'yaml2uvmf.py')} {interface_yaml_file} {predictor_yaml_file} {environment_yaml_file} {bench_yaml_file} -d ../uvmf
+{os.path.join(python27_home , 'python')} {os.path.join(uvmf_home, 'scripts', 'yaml2uvmf.py')} {" ".join(interface_yaml_files)} -d ../uvmf
 pause"""
         return script_content
 
@@ -409,13 +419,54 @@ pause"""
             file.write(script_content)
             print(f"Written: {file_name}")  
 
+    def gen_run_bcr_script_content(self):
+        # Read QUESTA_ROOT and UVMF_HOME from config.cf file
+        current_script_path = os.path.abspath(__file__)
+        current_script_directory = os.path.dirname(current_script_path)
+        config_file_path = f"{current_script_directory}/../config.cfg"
+
+        questa_root = None
+        uvmf_home = None
+
+        with open(config_file_path, 'r') as config_file:
+            config_lines = config_file.readlines()
+            for line in config_lines:
+                if line.startswith('QUESTA_HOME='):
+                    questa_root = line.split('=')[1].strip()
+                elif line.startswith('UVMF_HOME='):
+                    uvmf_home = line.split('=')[1].strip()
+                elif line.startswith('PYTHON_27_DIR='):
+                    python27_home = line.split('=')[1].strip()
+
+        design_name = self.output_dict["design_name"]
+        script_content = f"""REM {design_name}
+@set QUESTA_ROOT={questa_root}
+@set UVMF_HOME={uvmf_home}
+{os.path.join(python27_home , 'python')} {os.path.join(uvmf_home, 'scripts', 'uvmf_bcr.py')} "questa live:TRUE enable_trlog:True wave_file:wave.do code_cov_enable:1 code_cov_types:sbfec code_cov_target:/hdl_top/DUT. extra_do:"onbreak {{resume}}; set PrefSource (OpenOnBreak) 0; radix hex showbase; "
+pause"""
+        
+        with open(f"./script/run_bcr_sim.bat", 'w') as file:
+            file.write(script_content)
+            print(f"Written: run_bcr_sim.bat")
+
+    def generate_invoke_questa_script_content(self):
+        design_name = self.output_dict["design_name"]
+        script_content = f"""REM {design_name}
+vsim -i -do "do compile.do; do run.do
+pause"""
+        
+        with open(f"./script/invoke_questa.bat", 'w') as file:
+            file.write(script_content)
+            print(f"Written: invoke_questa.bat")
+
     def write_yaml_files(self):
         self.write_interface_yaml_files()
         self.write_env_yaml_file()
         self.write_benches_yaml_file()
         self.write_util_components_yaml_file()
-        self.write_batch_script_file()  # Call the method to write batch script file
-
+        self.write_batch_script_file() 
+        self.gen_run_bcr_script_content()
+        self.generate_invoke_questa_script_content()
 
 # Example usage
 def yaml_assistant():
