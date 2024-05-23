@@ -99,7 +99,8 @@ class YamlProcessor:
                         add_method(line_no, name, input_type, size, description, default_value)
                     else:
                         add_method(line_no, name, input_type, size, description)
-
+        print(hardware_component.parameters)
+        print(hardware_component.ports)
 
     def convert_to_desired_format(self):
         design_name = list(self.parsed_yaml.keys())[0]

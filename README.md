@@ -11,10 +11,12 @@
   - [Installation](#installation)
   - [Usage](#usage)
     - [Initialize](#initialize)
-    - [Commit](#commit)
-    - [Upsub](#upsub)
+    - [git](#git)
+      - [Commit](#commit)
+      - [Upsub](#upsub)
     - [Template](#template)
     - [Cheatsheet](#cheatsheet)
+    - [yaml](#yaml)
     - [License](#license)
     - [Contributing](#contributing)
     - [Authors](#authors)
@@ -82,7 +84,9 @@ matool init
 
 Run `matool init` to initialize your project with all the necessary files, including standard directories, script files, YAML files, and more.
 
-### Commit
+### git
+
+#### Commit
 
 This command combines the following git commands into one:
 
@@ -94,17 +98,17 @@ This command combines the following git commands into one:
 It streamlines the process of committing changes, allowing you to update the `README.md` and push changes with a single command.
 
 ```sh
-matool commit <message>
+matool git commit <message>
 ```
 
 `message`: The commit message.
 
-### Upsub
+#### Upsub
 
 Update the submodule to the latest version.
 
 ```sh
-matool upsub <submodule_path> [--main_repo_path <main_repo_path>] [--submodule_branch <submodule_branch>] [--main_repo_branch <main_repo_branch>]
+matool git upsub <submodule_path> [--main_repo_path <main_repo_path>] [--submodule_branch <submodule_branch>] [--main_repo_branch <main_repo_branch>]
 ```
 
 `submodule_path`: The path to the submodule.
@@ -143,6 +147,14 @@ matool cheatsheet
 ```
 
 This command will display a list of available cheatsheets, allowing you to choose between them. After selecting a cheatsheet, you can navigate through its table of contents and read the topics of interest. The content of each cheatsheet is presented in a beautifully colorful highlighted manner, ensuring a pleasant reading experience without causing fatigue within the terminal.
+
+### yaml
+
+after using `matool init` in a directory, it will generate `%PROJECT_HOME%/tb/yaml/matool.yaml`. copy your interfaces ports from your verilog code in this yaml file, then use `matool yaml` to generate standard yaml file and script for uvm framework.
+
+```sh
+matool yaml
+```
 
 ### License
 
