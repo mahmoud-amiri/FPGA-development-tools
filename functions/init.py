@@ -38,6 +38,7 @@ def init():
         {'src': '/files/build_ps.tcl', 'dest': './script/build_ps.tcl'},
         {'src': '/files/gen_bitstream.tcl', 'dest': './script/gen_bitstream.tcl'},
         {'src': '/files/save_bd.tcl', 'dest': './script/save_bd.tcl'},
+        {'src': '/files/matool.yaml', 'dest': './tb/yaml/matool.yaml'},
         # Add the rest of the mappings here
     ]
 

@@ -2,6 +2,7 @@ uvmf:
   util_components:
     <design-name>_predictor:  
       analysis_exports: #Tells UVMF code generator to create exports/ports with the specified names and specified transaction types
+      #Tells UVMF code generator to create exports/ports with the specified names and specified transaction types
       - name: <design-name>_<interface-name>_agent_ae
         type: '<design-name>_<interface-name>_transaction #()'
       analysis_ports:
