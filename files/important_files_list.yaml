@@ -1,0 +1,23 @@
+Categories:
+  UVMF:
+    - file_name: "hdl_top"
+      file_path: "./tb/uvmf/project_benches/<design-name>/tb/testbench/hdl_top.sv"
+    - file_name: "compile.do"
+      file_path: "./tb/uvmf/project_benches/<design-name>/sim/compile.do"
+    - file_name: "Makefile"
+      file_path: "./tb/uvmf/project_benches/<design-name>/sim/Makefile"
+    - file_name: "interface driver bfm"
+      file_path: "./tb/uvmf/verification_ip/interface_packages/<design-name>_<interface-name>_pkg/src/<design-name>_<interface-name>_driver_bfm.sv"  
+    - file_name: "interface monitor bfm"
+      file_path: "./tb/uvmf/verification_ip/interface_packages/<design-name>_<interface-name>_pkg/src/<design-name>_<interface-name>_monitor_bfm.sv"        
+    - file_name: "Predictor"
+      file_path: "./tb/uvmf/verification_ip/environment_packages/<design-name>_env_pkg/src/<design-name>_predictor.svh"
+  vivado:
+    - file_name: "file3.sv"
+      file_path: "/path/to/file3.sv"
+    - file_name: "file4.sv"
+      file_path: "/path/to/file4.sv"
+  others:
+    - file_name: "project read me file"
+      file_path: "./readme.md"
+

@@ -7,6 +7,8 @@ from functions.comment_readme import auto_comment_gen, auto_readme_gen
 from functions.yaml_assistant import yaml_assistant
 from functions.questa import copy_and_run_questa_sim_bat
 from functions.uvmf import copy_and_run_uvmf_bat
+from functions.important_files import generate_important_files, process_important_files
+from functions.instantiation import instantiation, top_level_instantiation
 def main():
     parser = argparse.ArgumentParser(description='Matool CLI')
     subparsers = parser.add_subparsers(dest='command')
@@ -44,7 +46,12 @@ def main():
     yaml_parser = subparsers.add_parser('yaml', help='Run the yaml assistant')
     questa_parser = subparsers.add_parser('questa', help='Run the questa')
     uvmf_parser = subparsers.add_parser('uvmf', help='Run the uvmf python script for generating the testbench')
-
+    important_parser = subparsers.add_parser('important', help='open the important files in VS Code')
+    
+    instantiation_parser = subparsers.add_parser('instantiation', help='Instantiation template generator for Verilog file or clipboard')
+    instantiation_parser.add_argument('file_path', nargs='?', default=None, help='Path to the Verilog file')
+    instantiation_parser.add_argument('-top', action='store_true', help='Specify if the top module name is to be used')
+    
     args = parser.parse_args()
 
     if args.command == 'init':
@@ -67,7 +74,20 @@ def main():
     elif args.command == 'questa':
         copy_and_run_questa_sim_bat()  
     elif args.command == 'uvmf':
-        copy_and_run_uvmf_bat()          
+        copy_and_run_uvmf_bat() 
+        generate_important_files()  
+    elif args.command == 'important':
+        process_important_files()
+    elif args.command == 'instantiation':
+        if args.file_path:
+            print(1)
+            instantiation(args.file_path)
+        elif args.top:
+            print(2)
+            top_level_instantiation()
+        else:
+            print(3)
+            instantiation()      
     else:
         parser.print_help()
 

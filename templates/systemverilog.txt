@@ -1,0 +1,59 @@
+clock_generator:
+    module clock_generator(
+        output bit clk,
+        input time period,
+        input time phase_shift
+    );
+        initial begin
+            clk = 0;
+            #(phase_shift);
+            forever begin
+                #(period/2);
+                clk = ~clk;
+            end
+        end
+    endmodule
+
+    bit clk1;
+    time clk1_period = 10ns;
+    time clk1_phase_shift = 0ns;
+    clock_generator clk_gen1(.clk(clk1), .period(clk1_period), .phase_shift(clk1_phase_shift));
+
+
+reset_generator:
+    module reset_generator(
+        output bit rst,
+        input time initial_delay = 0ns,
+        input time pulse_width = 200ns,
+        input bit active_low = 1  // 1 for active-low, 0 for active-high
+    );
+        initial begin
+            if (active_low) begin
+                rst = 1;  // Default to inactive state for active-low
+            end else begin
+                rst = 0;  // Default to inactive state for active-high
+            end
+            
+            #(initial_delay);
+            
+            if (active_low) begin
+                rst = 0;  // Assert reset (active-low)
+            end else begin
+                rst = 1;  // Assert reset (active-high)
+            end
+            
+            #(pulse_width);
+            
+            if (active_low) begin
+                rst = 1;  // Deassert reset (active-low)
+            end else begin
+                rst = 0;  // Deassert reset (active-high)
+            end
+        end
+    endmodule
+
+
+    time initial_reset_delay = 0ns;
+    time reset_pulse_width = 200ns;
+    bit active_low_reset = 1;  // Set to 1 for active-low, 0 for active-high
+    reset_generator rst_gen_inst(.rst(rst), .initial_delay(initial_reset_delay), .pulse_width(reset_pulse_width), .active_low(active_low_reset));

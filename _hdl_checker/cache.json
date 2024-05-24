@@ -1,0 +1,494 @@
+{
+ "builder": {
+  "_version": "2021.1",
+  "_modelsim_ini": {
+   "name": "d:\\GitHub\\matool\\_hdl_checker\\modelsim.ini",
+   "__class__": "Path"
+  },
+  "_logger": "hdl_checker.builders.msim",
+  "_work_folder": "d:\\GitHub\\matool\\_hdl_checker",
+  "_builtin_libraries": [
+   {
+    "name": "synopsys",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "mtiAvm",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "modelsim_lib",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "ieee_env",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "verilog",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "vital2000",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "mtiUvm",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "vhdlopt_lib",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "osvvm",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "mtiPA",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "infact",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "mtiRnm",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "floatfixlib",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "ieee",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "std",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "vh_ux01v_lib",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "flps_lib",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "mtiUPF",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "sv_std",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "mc2_lib",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "mtiOvm",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "mgc_ams",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   },
+   {
+    "name": "std_developerskit",
+    "case_sensitive": false,
+    "__class__": "Identifier"
+   }
+  ],
+  "_added_libraries": [
+   {
+    "name": "not_in_project",
+    "case_sensitive": true,
+    "__class__": "Identifier"
+   }
+  ],
+  "__class__": "MSim"
+ },
+ "config_file": [
+  {
+   "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\hdl_checker_project_pid912_kpdo71zg.json",
+   "__class__": "Path"
+  },
+  1716543422.7770715,
+  "generated"
+ ],
+ "database": {
+  "sources": [],
+  "inferred_libraries": [],
+  "design_units": [
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmp1gdicdxi.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definitions",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      8,
+      45
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmp0llru394.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definition",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      13,
+      36
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmpwpvd8gc5.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definitions",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      8,
+      45
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmpwy93nsdr.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "adder_subtractor",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      0,
+      6
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmp7oh5jzda.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definition",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      13,
+      36
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmp1gdicdxi.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definition",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      13,
+      36
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmpwpvd8gc5.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definition",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      13,
+      36
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmpwbswne1d.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "adder_subtractor",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      0,
+      6
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmp02ybjuyn.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definitions",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      8,
+      45
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "d:\\GitHub\\matool\\test\\test.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "adder_subtractor",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      0,
+      6
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmp02ybjuyn.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definition",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      13,
+      36
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmp6b0z14tf.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definitions",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      8,
+      45
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmp0llru394.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definitions",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      8,
+      45
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmpzjvkp8sv.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definitions",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      8,
+      45
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmp88hcksv4.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definition",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      17,
+      36
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmp6b0z14tf.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definition",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      13,
+      36
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmp7oh5jzda.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definitions",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      8,
+      45
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   },
+   {
+    "owner": {
+     "name": "C:\\Users\\mamir\\AppData\\Local\\Temp\\tmpzjvkp8sv.v",
+     "__class__": "Path"
+    },
+    "type_": "entity",
+    "name": {
+     "name": "definition",
+     "case_sensitive": true,
+     "__class__": "VerilogIdentifier"
+    },
+    "locations": [
+     [
+      13,
+      36
+     ]
+    ],
+    "__class__": "VerilogDesignUnit"
+   }
+  ],
+  "__class__": "Database"
+ },
+ "__version__": "0.7.4"
+}

@@ -1,0 +1,33 @@
+m255
+K4
+z2
+!s11f vlog 2021.1 2021.01, Jan 19 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dd:/GitHub/matool
+vadder_subtractor
+!s110 1716554483
+!i10b 1
+!s100 Rb_=cA3JYF6=c@zhFb08P2
+I8Td?XNV3dE8IT`=_Si5H`1
+R0
+w1716554482
+8d:\GitHub\matool\test\test.v
+Fd:\GitHub\matool\test\test.v
+!i122 35
+L0 1 39
+VDg1SIo80bB@j0V0VzS_@n1
+OL;L;2021.1;73
+r1
+!s85 0
+31
+!s108 1716554483.000000
+!s107 d:\GitHub\matool\test\test.v|
+!s90 -modelsimini|d:\GitHub\matool\_hdl_checker\modelsim.ini|-quiet|-work|d:\GitHub\matool\_hdl_checker\not_in_project|-lint|-hazards|-pedanticerrors|-L|not_in_project|d:\GitHub\matool\test\test.v|
+!i113 0
+o-quiet -work {d:\GitHub\matool\_hdl_checker\not_in_project} -lint -hazards -pedanticerrors -L not_in_project -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+tCvgOpt 0
