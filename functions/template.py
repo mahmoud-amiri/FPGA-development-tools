@@ -2,10 +2,13 @@ import os
 import pyperclip
 
 
-supported_template_types = ['vhdl', 'verilog']
+supported_template_types = ['vhdl', 'verilog', 'systemverilog', 'tcl', 'python', 'cpp', 'c', 'assertion', 'coverage', 'UVM', 'OVL']
 
 def get_template(template_type, template_name):
-    template_file = './templates/' + template_type + '.txt'
+    script_path = os.path.realpath(__file__)
+    # Get the directory of the current script
+    script_dir = os.path.dirname(script_path)
+    template_file = f"{script_dir}/../templates/{template_type}.txt"
     if not os.path.isfile(template_file):
         print(f"Template file '{template_file}' not found.")
         return None

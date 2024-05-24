@@ -3,7 +3,7 @@ import sys
 import re
 
 # Keywords definitions (assuming they are defined in keywords.py)
-from .keywords import c_keywords, cpp_keywords, python_keywords, tcl_keywords, vhdl_keywords, verilog_keywords, systemverilog_keywords
+from .keywords import c_keywords, cpp_keywords, python_keywords, tcl_keywords, vhdl_keywords, verilog_keywords, systemverilog_keywords, sh_keywords
 sys.path.append(os.path.join(os.path.dirname(__file__), 'cheatsheets_for_digital_designers'))
 
 # ANSI escape codes for colors
@@ -68,6 +68,8 @@ def highlight_code(code, language):
         code = highlight_keywords(code, verilog_keywords, AnsiColors.CYAN)
     elif language == 'systemverilog':
         code = highlight_keywords(code, systemverilog_keywords, AnsiColors.CYAN)
+    elif language == 'sh':
+        code = highlight_keywords(code, sh_keywords, AnsiColors.CYAN)    
     else:
         # Handle other languages if needed
         pass

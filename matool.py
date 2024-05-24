@@ -8,7 +8,7 @@ from functions.yaml_assistant import yaml_assistant
 from functions.questa import copy_and_run_questa_sim_bat
 from functions.uvmf import copy_and_run_uvmf_bat
 from functions.important_files import generate_important_files, process_important_files
-from functions.instantiation import instantiation, top_level_instantiation
+from functions.instantiation import instantiation_file, instantiation_clipboard, top_level_instantiation
 def main():
     parser = argparse.ArgumentParser(description='Matool CLI')
     subparsers = parser.add_subparsers(dest='command')
@@ -31,6 +31,15 @@ def main():
     template_parser = subparsers.add_parser('template', help='Copy a template to the clipboard')
     template_parser.add_argument('-vhdl', dest='template_type', action='store_const', const='vhdl', help='VHDL template')
     template_parser.add_argument('-verilog', dest='template_type', action='store_const', const='verilog', help='Verilog template')
+    template_parser.add_argument('-systemverilog', dest='template_type', action='store_const', const='systemverilog', help='Systemverilog template')
+    template_parser.add_argument('-assertion', dest='template_type', action='store_const', const='assertion', help='assertion template')
+    template_parser.add_argument('-ovl', dest='template_type', action='store_const', const='ovl', help='ovl template')
+    template_parser.add_argument('-uvm', dest='template_type', action='store_const', const='uvm', help='uvm template')
+    template_parser.add_argument('-coverage', dest='template_type', action='store_const', const='coverage', help='coverage template')
+    template_parser.add_argument('-c', dest='template_type', action='store_const', const='c', help='c template')
+    template_parser.add_argument('-cpp', dest='template_type', action='store_const', const='cpp', help='cpp template')
+    template_parser.add_argument('-python', dest='template_type', action='store_const', const='python', help='python template')
+    template_parser.add_argument('-tcl', dest='template_type', action='store_const', const='tcl', help='tcl template')
     template_parser.add_argument('template_name', type=str, help='Name of the template to copy')
 
     cheatsheet_parser = subparsers.add_parser('cheatsheet', help='Open README.md in VS Code')
@@ -46,12 +55,15 @@ def main():
     yaml_parser = subparsers.add_parser('yaml', help='Run the yaml assistant')
     questa_parser = subparsers.add_parser('questa', help='Run the questa')
     uvmf_parser = subparsers.add_parser('uvmf', help='Run the uvmf python script for generating the testbench')
-    important_parser = subparsers.add_parser('important', help='open the important files in VS Code')
-    
-    instantiation_parser = subparsers.add_parser('instantiation', help='Instantiation template generator for Verilog file or clipboard')
-    instantiation_parser.add_argument('file_path', nargs='?', default=None, help='Path to the Verilog file')
-    instantiation_parser.add_argument('-top', action='store_true', help='Specify if the top module name is to be used')
-    
+    important_parser = subparsers.add_parser('important', help='open the important files inside the vscode')
+    instantiation_parser = subparsers.add_parser('instantiation', help='Instantiation template generator')
+    instantiation_subparsers = instantiation_parser.add_subparsers(dest='subcommand')
+
+    instantiation_default_parser = instantiation_subparsers.add_parser('default', help='Default instantiation')
+    instantiation_top_parser = instantiation_subparsers.add_parser('top', help='Top instantiation')
+    instantiation_file_parser = instantiation_subparsers.add_parser('file', help='Instantiation from file')
+    instantiation_file_parser.add_argument('file_path', type=str, help='Path to the Verilog file')
+
     args = parser.parse_args()
 
     if args.command == 'init':
@@ -79,15 +91,12 @@ def main():
     elif args.command == 'important':
         process_important_files()
     elif args.command == 'instantiation':
-        if args.file_path:
-            print(1)
-            instantiation(args.file_path)
-        elif args.top:
-            print(2)
+        if args.subcommand == 'top':
             top_level_instantiation()
+        elif args.subcommand == 'file':
+            instantiation_file(args.file_path)  
         else:
-            print(3)
-            instantiation()      
+            instantiation_clipboard()      
     else:
         parser.print_help()
 

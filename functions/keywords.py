@@ -116,3 +116,7 @@ systemverilog_keywords = [
     "while", "wildcard", "wire", "with", "within", "wor", "xnor", "xor"
 ]
 
+sh_keywords = [
+    "if", "then", "else", "elif", "fi", "case", "esac", "for", "select", "while", 
+    "until", "do", "done", "in", "function", "time", "coproc", "let"
+]

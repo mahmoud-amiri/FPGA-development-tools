@@ -72,16 +72,14 @@ def process_verilog_code(verilog_code):
     print("The instantiation template has been copied to the clipboard:")
     print(instantiation_template)
 
-def instantiation():
-    print(sys.argv)
-    if len(sys.argv) > 2:
-        file_path = sys.argv[2]
-        verilog_code = read_verilog_file(file_path)
-    else:
-        verilog_code = pyperclip.paste()
-        if not verilog_code:
-            raise ValueError("No Verilog code found in the clipboard")
+def instantiation_file(file_path):
+    verilog_code = read_verilog_file(file_path)
+    process_verilog_code(verilog_code)
 
+def instantiation_clipboard():
+    verilog_code = pyperclip.paste()
+    if not verilog_code:
+        raise ValueError("No Verilog code found in the clipboard")
     process_verilog_code(verilog_code)
 
 def get_top_level_module_address(yaml_file_path):
@@ -96,10 +94,9 @@ def get_top_level_module_address(yaml_file_path):
 
 def top_level_instantiation():
     module_name, file_path = get_top_level_module_address('./project_config.yaml')
-    instantiation(file_path)
+    print(file_path)
+    instantiation_file(file_path)
 
-if __name__ == "__main__":
-    instantiation()
 
 
 

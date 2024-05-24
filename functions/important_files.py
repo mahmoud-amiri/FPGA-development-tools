@@ -111,7 +111,7 @@ class important_files:
         self.save_updated_important_files_list()
 
     def process(self):
-        self.read_info_file(self.important_files_list_path)
+        self.read_info_file(self.info_file_path)
         self.read_updated_important_files_list_and_select()
 # Example usage
 # processor = important_files('important_files_list.yaml', 'matool_yaml.yaml', 'updated_important_files_list.yaml', 'important_files_cheatsheet.txt')
