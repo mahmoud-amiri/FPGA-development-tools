@@ -1,4 +1,4 @@
-UVMF::hdl_top:
+UVMF:::hdl_top:
 
 # Instantiating & Wiring Up the DUT
 
@@ -27,7 +27,7 @@ UVMF::hdl_top:
 ```
  
 
-UVMF::compile.do:
+UVMF:::compile.do:
 
 - Remove the compilation lines for the default `verilog_dut.v` & `vhdl_dut.vhd`
   - **Original:**
@@ -39,12 +39,12 @@ UVMF::compile.do:
 - Replace with the `vlog` command to compile the `<design-name>.v` source file
   - **Modified:**
     ```plaintext
-    34 vlog -sv -timescale lps/lps -suppress 2223,2286 $env(UVMF_PROJECT_DIR)/../../hdl/<designe-name>.v
+    vlog -sv -timescale 1ps/1ps -suppress 2223,2286 $env(UVMF_PROJECT_DIR)/../../../../hdl/<designname>_gate.v
     ```
 
 
 
-UVMF::Makefile:
+UVMF:::Makefile:
 
 - Modify the source file list from the default `verilog_dut.sv` to use the `alu.v` source file
   - **Original:**
@@ -74,7 +74,7 @@ UVMF::Makefile:
     comp_<design-name>_dut: comp_<design-name>_verilog_dut
     ```
 
-UVMF::interface driver bfm:
+UVMF:::interface driver bfm:
 
 # Adding Protocol Information To The Driver BFM
 
@@ -124,7 +124,7 @@ endtask
 
 ```
 
-UVMF::interface monitor bfm:
+UVMF:::interface monitor bfm:
 
 # Modifying the ALU_in monitor BFM
 
@@ -151,7 +151,7 @@ UVMF::interface monitor bfm:
   endtask         
 ```
 
-UVMF::Predictor:
+UVMF:::Predictor:
 
 - Remove the warning in the `new` function
 - locate the `write_<design-name>_<interface-name>_agent_ae` task
@@ -159,9 +159,8 @@ UVMF::Predictor:
 - This function performs prediction of DUT output values based on DUT input, configuration and state
 - This code needs to be modified to implement the DUT functionality
 
-```systemvarilog
-
-virtual function void write_<design-name>_<interface-name>_agent_ae(<design-name>_<interface-name>_transaction #() t);
+```systemverilog
+  virtual function void write_<design-name>_<interface-name>_agent_ae(<design-name>_<interface-name>_transaction #() t);
     // pragma uvmf custom <design-name>_<interface-name>_agent_ae_predict<design-name> begin
     <design-name>_<interface-name>_agent_ae_debug = t;
     `uvm_info("PRED", "Transaction Received through <design-name>_<interface-name>_agent_ae", UVM_MEDIUM)
@@ -185,3 +184,6 @@ virtual function void write_<design-name>_<interface-name>_agent_ae(<design-name
     // pragma uvmf custom <design-name>_<interface-name>_agent_ae_predictor end
   endfunction
 ```
+
+UVMF:::end:
+end

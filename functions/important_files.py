@@ -52,13 +52,13 @@ class important_files:
             current_key = None
             current_info = []
             for line in lines:
-                if '::' in line:
+                if ':::' in line:
                     if current_key and current_info:
                         self.info_data[current_key] = ''.join(current_info).strip()
-                    parts = line.strip().split('::')
+                    parts = line.strip().split(':::')
                     category = parts[0]
                     file_name = parts[1].rstrip(':')
-                    current_key = f"{category}::{file_name}"
+                    current_key = f"{category}:::{file_name}"
                     current_info = []
                 else:
                     current_info.append(line)
@@ -66,7 +66,7 @@ class important_files:
                 self.info_data[current_key] = ''.join(current_info).strip()
 
     def display_info(self, selected_category, selected_file_name):
-        key = f"{selected_category}::{selected_file_name}"
+        key = f"{selected_category}:::{selected_file_name}"
         info = self.info_data.get(key, "No information available for this selection.")
         print(f"Information for {selected_file_name} in {selected_category}:\n{info}")
     
@@ -104,7 +104,7 @@ class important_files:
         os.system(f"code {selected_file_path}")
 
     def display_info(self, selected_category, selected_file_name, selected_info_key):
-        key = f"{selected_category}::{selected_info_key}"
+        key = f"{selected_category}:::{selected_info_key}"
         info = self.info_data.get(key, "No information available for this selection.")
         formatted_info = format_markdown(info)
         print(f"Information for {selected_file_name} in {selected_category}:\n{formatted_info}")
