@@ -1,8 +1,187 @@
-hdl_top:
+UVMF::hdl_top:
+
+# Instantiating & Wiring Up the DUT
+
+## Clocks & Resets
+
+- The `hdl_top` module contains simple clock and reset generation code.
+- Users can modify this to change frequencies, add more clocks, etc., as needed for their specific DUTs.
+- Clock frequency, clock offset, reset polarity, and reset duration are specified in the YAML configuration file.
+- Other DUTs may require modifications for different frequency clocks or opposite polarity resets.
+- use these CLI to get clock and reset generator sample code:
+
+```sh
+    matool template -systemverilog clock_generator
+    matool template -systemverilog reset_generator
+```
+
+## Instantiating the DUT
+
+- Find the comment "Instantiate DUT here" in the hdl_top file.
+- Remove the instantiations of `dut_verilog` and `dut_vhdl`.
+- Add an instance of the <design-name> and wire up ports to the corresponding agent interface.
+- use these CLI to get instantiation of your top module(based on the hyrarchy which is provided by user in the project_config.yaml):
+
+```sh
+    matool instantiation top
+```
+ 
+
+UVMF::compile.do:
+
+- Remove the compilation lines for the default `verilog_dut.v` & `vhdl_dut.vhd`
+  - **Original:**
+    ```plaintext
+    34 vlog -sv -timescale lps/lps -suppress 2223,2286 $env(UVMF_PROJECT_DIR)/rtl/verilog/verilog_dut.v
+    35 vcom $env(UVMF_PROJECT_DIR)/rtl/vhdl/vhdl_dut.vhd
+    ```
+
+- Replace with the `vlog` command to compile the `<design-name>.v` source file
+  - **Modified:**
+    ```plaintext
+    34 vlog -sv -timescale lps/lps -suppress 2223,2286 $env(UVMF_PROJECT_DIR)/../../hdl/<designe-name>.v
+    ```
 
 
-compile.do:
 
-Makefile:
+UVMF::Makefile:
 
+- Modify the source file list from the default `verilog_dut.sv` to use the `alu.v` source file
+  - **Original:**
+    ```plaintext
+    113 # UVMF_CHANGES_ME : Reference Verilog DUT source.
+    114 ALU_VERILOG_DUT = \
+    115 $(UVMF_PROJECT_DIR)/rtl/verilog/verilog_dut.v
+    ```
 
+  - **Modified:**
+    ```plaintext
+    113 # UVMF_CHANGES_ME : Reference Verilog DUT source.
+    114 ALU_VERILOG_DUT = \
+    115 $(UVMF_PROJECT_DIR)/../../hdl/<designe-name>.v
+    ```
+
+- Modify the `comp_ALU_dut` target to only now compile up a Verilog DUT
+  - **Original:**
+    ```plaintext
+    150 # UVMF_CHANGES_ME : Add make target to compile your dut here
+    comp_ALU_dut: comp_ALU_verilog_dut comp_ALU_vhdl_dut
+    ```
+
+  - **Modified:**
+    ```plaintext
+    150 # UVMF_CHANGES_ME : Add make target to compile your dut here
+    comp_<design-name>_dut: comp_<design-name>_verilog_dut
+    ```
+
+UVMF::interface driver bfm:
+
+# Adding Protocol Information To The Driver BFM
+
+- locate the `initiate_and_get_response` task
+- By default, the UVMF generator has 4 consecutive clock delays inserted into the driver. No data is actually driven onto the ALU_in bus interface.
+- This code needs to be modified to implement the interface protocol.
+- Replace the 4 consecutive clock cycle delays with a code similar to the following codes:
+
+```systemverilog
+task initiate_and_get_response(
+    input axi_stream_initiator_s axi_stream_initiator_struct,
+    output axi_stream_responder_s axi_stream_responder_struct
+    );
+    // Drive signals
+    tvalid_o <= 1'b1;
+    tdata_o <= axi_stream_initiator_struct.tdata;
+    tlast_o <= axi_stream_initiator_struct.tlast;
+
+    // Wait for ready signal
+    wait(tready_i == 1'b1);
+    @(posedge clk);
+
+    // Capture response
+    axi_stream_responder_struct.tready = tready_i;
+endtask
+
+```
+
+```systemverilog
+task respond_and_wait_for_next_transfer(
+    output axi_stream_initiator_s axi_stream_initiator_struct,
+    input axi_stream_responder_s axi_stream_responder_struct
+    );
+    // Wait for valid signal
+    wait(tvalid_i == 1'b1);
+    @(posedge clk);
+
+    // Capture initiator data
+    axi_stream_initiator_struct.tdata = tdata_i;
+    axi_stream_initiator_struct.tlast = tlast_i;
+
+    // Drive ready signal
+    tready_o <= 1'b1;
+    @(posedge clk);
+    tready_o <= 1'b0;
+endtask
+
+```
+
+UVMF::interface monitor bfm:
+
+# Modifying the ALU_in monitor BFM
+
+- locate the `do_monitor` task
+- By default the UVMF generator just has 4 consecutive clock delays inserted in to the monitor. No data is actually read from the ALU_in bus interface
+- This code needs to be modified to implement the interface Protocol
+- Replace the do_monitor task with a code similar to the following codes:
+
+```systemverilog
+  task do_monitor(output OR_in_monitor_s OR_in_monitor_struct);
+   
+    // Wait for a valid transaction
+    while (tvalid_i !== 1'b1) @(posedge clk_i);
+    
+    // Capture the relevant signal values
+    OR_in_monitor_struct.tdata = tdata_i;  // Capture the 'tdata' signal
+    OR_in_monitor_struct.tvalid = tvalid_i;  // Capture the 'tvalid' signal
+    OR_in_monitor_struct.tready = tready_i;  // Capture the 'tready' signal
+    OR_in_monitor_struct.tlast = tlast_i;  // Capture the 'tlast' signal
+    
+    // Wait for the transaction to complete
+    while (tvalid_i === 1'b1) @(posedge clk_i);
+
+  endtask         
+```
+
+UVMF::Predictor:
+
+- Remove the warning in the `new` function
+- locate the `write_<design-name>_<interface-name>_agent_ae` task
+- Transactions received through <design-name>_<interface-name>_agent_ae initiate the execution of this function
+- This function performs prediction of DUT output values based on DUT input, configuration and state
+- This code needs to be modified to implement the DUT functionality
+
+```systemvarilog
+
+virtual function void write_<design-name>_<interface-name>_agent_ae(<design-name>_<interface-name>_transaction #() t);
+    // pragma uvmf custom <design-name>_<interface-name>_agent_ae_predict<design-name> begin
+    <design-name>_<interface-name>_agent_ae_debug = t;
+    `uvm_info("PRED", "Transaction Received through <design-name>_<interface-name>_agent_ae", UVM_MEDIUM)
+    `uvm_info("PRED", {"            Data: ",t.convert2string()}, UVM_FULL)
+    
+    // Construct the output transaction
+    <design-name>_sb_ap_output_transaction = <design-name>_sb_ap_output_transaction_t::type_id::create("<design-name>_sb_ap_output_transaction");
+
+    // Assuming t has fields data1, data2, valid1, and valid2
+    if (t.valid1 && t.valid2) begin
+      <design-name>_sb_ap_output_transaction.sum = t.data1 + t.data2;
+      <design-name>_sb_ap_output_transaction.valid = 1;
+    end else begin
+      <design-name>_sb_ap_output_transaction.valid = 0;
+    end
+
+    `uvm_info("PRED", {"Predicted Sum: ", <design-name>_sb_ap_output_transaction.sum, " Valid: ", <design-name>_sb_ap_output_transaction.valid}, UVM_FULL)
+
+    // Code for sending output transaction out through <design-name>_sb_ap
+    <design-name>_sb_ap.write(<design-name>_sb_ap_output_transaction);
+    // pragma uvmf custom <design-name>_<interface-name>_agent_ae_predictor end
+  endfunction
+```

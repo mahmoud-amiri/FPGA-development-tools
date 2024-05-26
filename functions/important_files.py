@@ -32,9 +32,12 @@ class important_files:
                         if interface_details['active_passive'] == 'ACTIVE' or 'interface driver bfm' not in item['file_name']:
                             new_item = item.copy()
                             new_item['file_path'] = new_item['file_path'].replace('<design-name>', self.design_name).replace('<interface-name>', interface_name)
+                            new_item['info_key'] = new_item['file_name']
+                            new_item['file_name'] = new_item['file_name'].replace('interface', f"{interface_name} interface")
                             updated_items.append(new_item)
                 else:
                     item['file_path'] = item['file_path'].replace('<design-name>', self.design_name)
+                    item['info_key'] = item['file_name']
                     updated_items.append(item)
             self.data1['Categories'][category] = updated_items
     
@@ -84,6 +87,7 @@ class important_files:
         
         # List file names in the selected category
         file_names = [item['file_name'] for item in updated_important_files_list_data['Categories'][selected_category]]
+        info_keys = [item['info_key'] for item in updated_important_files_list_data['Categories'][selected_category]]
         print(f"Files in {selected_category}:")
         for idx, file_name in enumerate(file_names, 1):
             print(f"{idx}. {file_name}")
@@ -91,16 +95,16 @@ class important_files:
         # User selects a file name
         file_choice = int(input("Select a file by number: ")) - 1
         selected_file_name = file_names[file_choice]
-        
+        selected_info_key = info_keys[file_choice]
         # Display information from important_files_cheatsheet.txt
-        self.display_info(selected_category, selected_file_name)
+        self.display_info(selected_category, selected_file_name, selected_info_key)
         
         # Open the selected file in VS Code
         selected_file_path = updated_important_files_list_data['Categories'][selected_category][file_choice]['file_path']
         os.system(f"code {selected_file_path}")
 
-    def display_info(self, selected_category, selected_file_name):
-        key = f"{selected_category}::{selected_file_name}"
+    def display_info(self, selected_category, selected_file_name, selected_info_key):
+        key = f"{selected_category}::{selected_info_key}"
         info = self.info_data.get(key, "No information available for this selection.")
         formatted_info = format_markdown(info)
         print(f"Information for {selected_file_name} in {selected_category}:\n{formatted_info}")

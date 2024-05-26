@@ -118,5 +118,5 @@ systemverilog_keywords = [
 
 sh_keywords = [
     "if", "then", "else", "elif", "fi", "case", "esac", "for", "select", "while", 
-    "until", "do", "done", "in", "function", "time", "coproc", "let"
+    "until", "do", "done", "in", "function", "time", "coproc", "let", "matool"
 ]
