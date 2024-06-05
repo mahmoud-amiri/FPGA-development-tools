@@ -1,1 +1,7 @@
 test
+functions/__pycache__/*.*
+functions/__pycache__/cheatsheet.cpython-312.pyc
+functions/__pycache__/init.cpython-39.pyc
+functions/__pycache__/keywords.cpython-312.pyc
+TODO
+get-pip.py

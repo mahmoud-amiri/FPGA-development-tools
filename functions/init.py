@@ -39,6 +39,8 @@ def init():
         {'src': '/files/gen_bitstream.tcl', 'dest': './script/gen_bitstream.tcl'},
         {'src': '/files/save_bd.tcl', 'dest': './script/save_bd.tcl'},
         {'src': '/files/matool.yaml', 'dest': './tb/yaml/matool.yaml'},
+        {'src': '/files/important_files_cheatsheet.txt', 'dest': './.matool/important_files_cheatsheet.txt'},
+        {'src': '/files/important_files_list.yaml', 'dest': './.matool/important_files_list.yaml'},
         # Add the rest of the mappings here
     ]
 

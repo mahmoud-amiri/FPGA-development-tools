@@ -1,124 +1,319 @@
-entity:
-    Library ieee; --IEEE
-    use ieee.std_logic_1164.all;  --logic vector definitions
-    use ieee.numeric_std.all; -- arithmetic operations on logic vectors
-    -- Entity declaration with generics
-    entity EntityName is
-        generic (
-            n : integer := 16; -- Default value 16
-            m : integer := 32  -- Default value 32
-        );
-        port (
-            FirstPort  : in  std_logic;                        -- Single bit input
-            SecondPort : out std_logic;                        -- Single bit output
-            ThirdPort  : inout std_logic_vector(n-1 downto 0)  -- Bi-directional bus with size defined by generic 'n'
-        );
-    end EntityName;
+Address:
 
-    -- Architecture declaration
-    architecture ArchitectureName of EntityName is
+    covergroup addr_cg (input logic [ADDR_WIDTH-1:0] addr, int min_value = 0, int max_value = 2**ADDR_WIDTH - 1);
+        coverpoint addr {
+            bins min_bin = {min_value};
+            bins max_bin = {max_value};
+            bins range1  = {[min_value + 1 : (min_value + (max_value - min_value)/4)]};
+            bins range2  = {[(min_value + (max_value - min_value)/4 + 1) : (min_value + (max_value - min_value)/2)]};
+            bins range3  = {[(min_value + (max_value - min_value)/2 + 1) : (min_value + 3*(max_value - min_value)/4)]};
+            bins range4  = {[(min_value + 3*(max_value - min_value)/4 + 1) : (max_value - 1)]};
+        }
+    endgroup
 
-        -- Signal declarations
-        signal wire : std_logic;                             -- Single wire signal
-        signal bus : std_logic_vector(m-1 downto 0);         -- Bus signal with size defined by generic 'm'
+Data:
 
-    begin
+    covergroup data_cg (input logic [DATA_WIDTH-1:0]  data, int min_value = 0, int max_value = 2**DATA_WIDTH - 1);
+        coverpoint data {
+            bins min_bin = {min_value};
+            bins max_bin = {max_value};
+            bins range1  = {[min_value + 1 : (min_value + (max_value - min_value)/4)]};
+            bins range2  = {[(min_value + (max_value - min_value)/4 + 1) : (min_value + (max_value - min_value)/2)]};
+            bins range3  = {[(min_value + (max_value - min_value)/2 + 1) : (min_value + 3*(max_value - min_value)/4)]};
+            bins range4  = {[(min_value + 3*(max_value - min_value)/4 + 1) : (max_value - 1)]};
+        }
+    endgroup
 
-        -- Behavior and assignments go here
-        -- Example: Simple assignment (not practical, just illustrative)
-        wire <= FirstPort;
-        SecondPort <= wire;
-        bus <= (others => '0'); -- Initialize bus to all zeros
+Control:
+    covergroup control_cg (input logic ctrl);
+        coverpoint ctrl {
+            bins low  = {0};
+            bins high = {1};
+        }    
+    endgroup
 
-    end ArchitectureName;
+enum:
+    typedef enum logic [2:0] {
+        A = 3'b000,
+        B = 3'b001,
+        C = 3'b010,
+        D = 3'b011,
+        E = 3'b100
+    } other_enum_t;
+
+    // Generic covergroup for any enum type T
+    covergroup enum_cg with function (T value);
+        coverpoint value;
+    endgroup  
+
+AXI_Stream:
+    covergroup cg with function (axi_stream_transaction item);
+        option.per_instance = 1;
+
+        // Parameter for data width
+        localparam int DATA_WIDTH = 8;
+        localparam int MAX_DATA_VALUE = (1 << DATA_WIDTH) - 1;
+        localparam int MIN_DATA_VALUE = 0;
+
+        // Coverpoint for tvalid signal
+        coverpoint item.tvalid {
+            bins valid_true = {1};
+            bins valid_false = {0};
+            bins toggle = (0 => 1, 1 => 0);
+        }
+
+        // Coverpoint for tready signal
+        coverpoint item.tready {
+            bins ready_true = {1};
+            bins ready_false = {0};
+            bins toggle = (0 => 1, 1 => 0);
+        }
+
+        // Coverpoint for tdata signal
+        coverpoint item.tdata {
+            bins min_bin = {MIN_DATA_VALUE};
+            bins max_bin = {MAX_DATA_VALUE};
+            bins range1  = {[MIN_DATA_VALUE + 1 : (MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/4)]};
+            bins range2  = {[(MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/4 + 1) : (MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/2)]};
+            bins range3  = {[(MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/2 + 1) : (MIN_DATA_VALUE + 3*(MAX_DATA_VALUE - MIN_DATA_VALUE)/4)]};
+            bins range4  = {[(MIN_DATA_VALUE + 3*(MAX_DATA_VALUE - MIN_DATA_VALUE)/4 + 1) : (MAX_DATA_VALUE - 1)]};
+        }
+
+        // Coverpoint for tlast signal
+        coverpoint item.tlast {
+            bins last_true = {1};
+            bins last_false = {0};
+        }
+
+        // Coverpoint for tuser signal
+        coverpoint item.tuser {
+            bins user_present = {1};
+            bins user_not_present = {0};
+        }
+
+        // Cross coverage between signals
+        cross item.tvalid, item.tready {
+            bins valid_ready = binsof(item.tvalid) intersect {1} && binsof(item.tready) intersect {1};
+            bins valid_not_ready = binsof(item.tvalid) intersect {1} && binsof(item.tready) intersect {0};
+        }
+
+        cross item.tvalid, item.tlast {
+            bins valid_last = binsof(item.tvalid) intersect {1} && binsof(item.tlast) intersect {1};
+            bins valid_not_last = binsof(item.tvalid) intersect {1} && binsof(item.tlast) intersect {0};
+        }
+
+        cross item.tvalid, item.tuser {
+            bins valid_user_present = binsof(item.tvalid) intersect {1} && binsof(item.tuser) intersect {1};
+            bins valid_user_not_present = binsof(item.tvalid) intersect {1} && binsof(item.tuser) intersect {0};
+        }
+
+    endgroup : cg
+
+AXI_Lite:
+    covergroup axi_lite_cg with function (axi_lite_transaction item);
+        option.per_instance = 1;
+
+        // Parameter for data width
+        localparam int DATA_WIDTH = 8;
+        localparam int MAX_DATA_VALUE = (1 << DATA_WIDTH) - 1;
+        localparam int MIN_DATA_VALUE = 0;
+
+        // Coverpoint for AWVALID signal
+        coverpoint item.awvalid {
+            bins valid_true = {1};
+            bins valid_false = {0};
+            bins toggle = (0 => 1, 1 => 0);
+        }
+
+        // Coverpoint for AWREADY signal
+        coverpoint item.awready {
+            bins ready_true = {1};
+            bins ready_false = {0};
+            bins toggle = (0 => 1, 1 => 0);
+        }
+
+        // Coverpoint for WVALID signal
+        coverpoint item.wvalid {
+            bins valid_true = {1};
+            bins valid_false = {0};
+            bins toggle = (0 => 1, 1 => 0);
+        }
+
+        // Coverpoint for WREADY signal
+        coverpoint item.wready {
+            bins ready_true = {1};
+            bins ready_false = {0};
+            bins toggle = (0 => 1, 1 => 0);
+        }
+
+        // Coverpoint for BVALID signal
+        coverpoint item.bvalid {
+            bins valid_true = {1};
+            bins valid_false = {0};
+            bins toggle = (0 => 1, 1 => 0);
+        }
+
+        // Coverpoint for BREADY signal
+        coverpoint item.bready {
+            bins ready_true = {1};
+            bins ready_false = {0};
+            bins toggle = (0 => 1, 1 => 0);
+        }
+
+        // Coverpoint for ARVALID signal
+        coverpoint item.arvalid {
+            bins valid_true = {1};
+            bins valid_false = {0};
+            bins toggle = (0 => 1, 1 => 0);
+        }
+
+        // Coverpoint for ARREADY signal
+        coverpoint item.arready {
+            bins ready_true = {1};
+            bins ready_false = {0};
+            bins toggle = (0 => 1, 1 => 0);
+        }
+
+        // Coverpoint for RVALID signal
+        coverpoint item.rvalid {
+            bins valid_true = {1};
+            bins valid_false = {0};
+            bins toggle = (0 => 1, 1 => 0);
+        }
+
+        // Coverpoint for RREADY signal
+        coverpoint item.rready {
+            bins ready_true = {1};
+            bins ready_false = {0};
+            bins toggle = (0 => 1, 1 => 0);
+        }
+
+        // Coverpoint for WDATA signal
+        coverpoint item.wdata {
+            bins min_bin = {MIN_DATA_VALUE};
+            bins max_bin = {MAX_DATA_VALUE};
+            bins range1  = {[MIN_DATA_VALUE + 1 : (MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/4)]};
+            bins range2  = {[(MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/4 + 1) : (MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/2)]};
+            bins range3  = {[(MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/2 + 1) : (MIN_DATA_VALUE + 3*(MAX_DATA_VALUE - MIN_DATA_VALUE)/4)]};
+            bins range4  = {[(MIN_DATA_VALUE + 3*(MAX_DATA_VALUE - MIN_DATA_VALUE)/4 + 1) : (MAX_DATA_VALUE - 1)]};
+        }
+
+        // Coverpoint for RDATA signal
+        coverpoint item.rdata {
+            bins min_bin = {MIN_DATA_VALUE};
+            bins max_bin = {MAX_DATA_VALUE};
+            bins range1  = {[MIN_DATA_VALUE + 1 : (MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/4)]};
+            bins range2  = {[(MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/4 + 1) : (MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/2)]};
+            bins range3  = {[(MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/2 + 1) : (MIN_DATA_VALUE + 3*(MAX_DATA_VALUE - MIN_DATA_VALUE)/4)]};
+            bins range4  = {[(MIN_DATA_VALUE + 3*(MAX_DATA_VALUE - MIN_DATA_VALUE)/4 + 1) : (MAX_DATA_VALUE - 1)]};
+        }
+
+        // Cross coverage between key signals
+        cross item.awvalid, item.awready {
+            bins valid_ready = binsof(item.awvalid) intersect {1} && binsof(item.awready) intersect {1};
+            bins valid_not_ready = binsof(item.awvalid) intersect {1} && binsof(item.awready) intersect {0};
+        }
+
+        cross item.wvalid, item.wready {
+            bins valid_ready = binsof(item.wvalid) intersect {1} && binsof(item.wready) intersect {1};
+            bins valid_not_ready = binsof(item.wvalid) intersect {1} && binsof(item.wready) intersect {0};
+        }
+
+        cross item.bvalid, item.bready {
+            bins valid_ready = binsof(item.bvalid) intersect {1} && binsof(item.bready) intersect {1};
+            bins valid_not_ready = binsof(item.bvalid) intersect {1} && binsof(item.bready) intersect {0};
+        }
+
+        cross item.arvalid, item.arready {
+            bins valid_ready = binsof(item.arvalid) intersect {1} && binsof(item.arready) intersect {1};
+            bins valid_not_ready = binsof(item.arvalid) intersect {1} && binsof(item.arready) intersect {0};
+        }
+
+        cross item.rvalid, item.rready {
+            bins valid_ready = binsof(item.rvalid) intersect {1} && binsof(item.rready) intersect {1};
+            bins valid_not_ready = binsof(item.rvalid) intersect {1} && binsof(item.rready) intersect {0};
+        }
+
+    endgroup : axi_lite_cg
 
 
-process:
-    process(clk)
-    begin
-        if rising_edge(clk) then  -- Triggering on the rising edge of the clock
-            if rst = '1' then   -- Checking for a synchronous reset
-                data_out <= (others => '0');  -- Reset data output to all zeros
-            else
-                data_out <= data_in;  -- Transfer input to output if not reset
-            end if;
-        end if;
-    end process;
+FIFO:
+    parameter DEPTH = 8;
+    parameter WIDTH = 8;
+    parameter MIN_DATA_VALUE = 0;
+    parameter MAX_DATA_VALUE = (1 << WIDTH) - 1;
+    // Coverage groups
+    covergroup cg_write @(posedge clk);
+        coverpoint write_en {
+            bins write_enable = {1'b1};
+            bins write_disable = {1'b0};
+        }
+        coverpoint write_data {
+            bins min_bin = {MIN_DATA_VALUE};
+            bins max_bin = {MAX_DATA_VALUE};
+            bins range1 = {[MIN_DATA_VALUE + 1 : (MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/4)]};
+            bins range2 = {[(MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/4 + 1) : (MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/2)]};
+            bins range3 = {[(MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/2 + 1) : (MIN_DATA_VALUE + 3*(MAX_DATA_VALUE - MIN_DATA_VALUE)/4)]};
+            bins range4 = {[(MIN_DATA_VALUE + 3*(MAX_DATA_VALUE - MIN_DATA_VALUE)/4 + 1) : (MAX_DATA_VALUE - 1)]};
+        }
+        cross write_en, write_data;
+    endgroup
 
+    covergroup cg_read @(posedge clk);
+        coverpoint read_en {
+            bins read_enable = {1'b1};
+            bins read_disable = {1'b0};
+        }
+        coverpoint read_data {
+            bins min_bin = {MIN_DATA_VALUE};
+            bins max_bin = {MAX_DATA_VALUE};
+            bins range1 = {[MIN_DATA_VALUE + 1 : (MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/4)]};
+            bins range2 = {[(MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/4 + 1) : (MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/2)]};
+            bins range3 = {[(MIN_DATA_VALUE + (MAX_DATA_VALUE - MIN_DATA_VALUE)/2 + 1) : (MIN_DATA_VALUE + 3*(MAX_DATA_VALUE - MIN_DATA_VALUE)/4)]};
+            bins range4 = {[(MIN_DATA_VALUE + 3*(MAX_DATA_VALUE - MIN_DATA_VALUE)/4 + 1) : (MAX_DATA_VALUE - 1)]};
+        }
+        cross read_en, read_data;
+    endgroup
 
+    covergroup cg_fifo_status @(posedge clk);
+        coverpoint empty {
+            bins empty_true = {1'b1};
+            bins empty_false = {1'b0};
+        }
+        coverpoint full {
+            bins full_true = {1'b1};
+            bins full_false = {1'b0};
+        }
+        cross empty, full;
+    endgroup
 
-if:
-    if <condition-A> then
-        -- do something
-    elsif <condition-B> then
-        -- do something
-    else
-        -- Default condition
-    end if;
+    // Additional coverage for specific conditions
+    covergroup cg_write_full @(posedge clk);
+        coverpoint write_en {
+            bins write_enable = {1'b1};
+            bins write_disable = {1'b0};
+        }
+        coverpoint full {
+            bins full_true = {1'b1};
+            bins full_false = {1'b0};
+        }
+        cross write_en, full;
+    endgroup
 
+    covergroup cg_read_empty @(posedge clk);
+        coverpoint read_en {
+            bins read_enable = {1'b1};
+            bins read_disable = {1'b0};
+        }
+        coverpoint empty {
+            bins empty_true = {1'b1};
+            bins empty_false = {1'b0};
+        }
+        cross read_en, empty;
+    endgroup
 
-case:
-    case state is
-        when IDLE =>
-            -- IDLE state actions
-        when RUNNING =>
-            -- RUNNING state actions
-        when ERROR =>
-            -- ERROR state actions
-        when others =>
-            -- Default actions
-    end case;
-
-when:
-    C <= A when SEL = "00" else
-         B when SEL = "01" else
-         '0';    
-
-
-doc:
-    --doc init
-    --
-    --#### Description
-    --Provide a detailed description of the module here. Explain its purpose, functionality, and any relevant background information.
-    --
-    --#### Ports
-    --| Port Name    | Direction | Width | Description                               |
-    --|--------------|-----------|-------|-------------------------------------------|
-    --| `port1`      | input     | 1     | Description of port1                      |
-    --| `port2`      | output    | 8     | Description of port2                      |
-    --| `port3`      | inout     | 16    | Description of port3                      |
-    --
-    --
-    --#### Parameters
-    --| Parameter Name | Default Value | Description                               |
-    --|----------------|---------------|-------------------------------------------|
-    --| `PARAM1`       | 10            | Description of PARAM1                     |
-    --| `PARAM2`       | 4             | Description of PARAM2                     |
-    --
-    --
-    --#### Internal Signals
-    --| Signal Name    | Width | Description                               |
-    --|----------------|-------|-------------------------------------------|
-    --| `signal1`      | 1     | Description of signal1                    |
-    --| `signal2`      | 8     | Description of signal2                    |
-    --
-    --#### Submodules
-    --| Submodule Name | Instance Name | Description                               |
-    --|----------------|---------------|-------------------------------------------|
-    --| `submodule1`   | `instance1`   | Description of submodule1                 |
-    --| `submodule2`   | `instance2`   | Description of submodule2                 |
-    --
-    --#### Functionality
-    --Provide a detailed description of the module's functionality. Include information about how it processes inputs, generates outputs, and any internal operations or state changes.
-    --
-    --#### State Machine (if applicable)
-    --Describe the state machine used within the module, including:
-    --- States
-    --- Transitions
-    --- Conditions for transitions
-    --- Actions performed in each state
-    --
-    --#### Timing Diagrams
-    --Include any relevant timing diagrams that illustrate the module's operation. Provide explanations for each diagram.
-    --
-    --doc end
+    cg_write cg_w = new();
+    cg_read cg_r = new();
+    cg_fifo_status cg_status = new();
+    cg_write_full cg_wf = new();
+    cg_read_empty cg_re = new();
