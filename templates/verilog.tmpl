@@ -1,4 +1,4 @@
-module:
+module:::
     // Module declaration with parameters
     module EntityName #(
         parameter n = 16, // Default value 16
@@ -22,7 +22,7 @@ module:
 
 
 
-always:
+always:::
     always @(posedge clk) begin
         if (reset) begin
             data_out <= 8'b00000000;  // Reset data output to all zeros
@@ -33,7 +33,7 @@ always:
 
 
 
-if:
+if:::
     if <condition_A> begin
         // do something
     end else if <condition-B> begin
@@ -43,7 +43,7 @@ if:
     end
 
 
-case:
+case:::
     case (state)
         IDLE: 
             led <= 0;     
@@ -55,10 +55,10 @@ case:
             led <= 1'bx;  
     endcase
 
-switch:
+switch:::
     assign led = (switch == 1) ? 1 : 0;
 
-doc:
+doc:::
     //doc init
 
     //#### Description

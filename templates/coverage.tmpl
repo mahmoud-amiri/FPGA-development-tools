@@ -1,4 +1,4 @@
-Address:
+Address:::
 
     covergroup addr_cg (input logic [ADDR_WIDTH-1:0] addr, int min_value = 0, int max_value = 2**ADDR_WIDTH - 1);
         coverpoint addr {
@@ -11,7 +11,7 @@ Address:
         }
     endgroup
 
-Data:
+Data:::
 
     covergroup data_cg (input logic [DATA_WIDTH-1:0]  data, int min_value = 0, int max_value = 2**DATA_WIDTH - 1);
         coverpoint data {
@@ -24,7 +24,7 @@ Data:
         }
     endgroup
 
-Control:
+Control:::
     covergroup control_cg (input logic ctrl);
         coverpoint ctrl {
             bins low  = {0};
@@ -32,7 +32,7 @@ Control:
         }    
     endgroup
 
-enum:
+enum:::
     typedef enum logic [2:0] {
         A = 3'b000,
         B = 3'b001,
@@ -46,7 +46,7 @@ enum:
         coverpoint value;
     endgroup  
 
-AXI_Stream:
+AXI_Stream:::
     covergroup cg with function (axi_stream_transaction item);
         option.per_instance = 1;
 
@@ -109,7 +109,7 @@ AXI_Stream:
 
     endgroup : cg
 
-AXI_Lite:
+AXI_Lite:::
     covergroup axi_lite_cg with function (axi_lite_transaction item);
         option.per_instance = 1;
 
@@ -237,7 +237,7 @@ AXI_Lite:
     endgroup : axi_lite_cg
 
 
-FIFO:
+FIFO:::
     parameter DEPTH = 8;
     parameter WIDTH = 8;
     parameter MIN_DATA_VALUE = 0;

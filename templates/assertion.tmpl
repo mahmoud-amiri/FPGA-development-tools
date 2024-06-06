@@ -1,4 +1,4 @@
-entity:
+entity:::
     Library ieee; --IEEE
     use ieee.std_logic_1164.all;  --logic vector definitions
     use ieee.numeric_std.all; -- arithmetic operations on logic vectors
@@ -33,7 +33,7 @@ entity:
     end ArchitectureName;
 
 
-process:
+process:::
     process(clk)
     begin
         if rising_edge(clk) then  -- Triggering on the rising edge of the clock
@@ -47,7 +47,7 @@ process:
 
 
 
-if:
+if:::
     if <condition-A> then
         -- do something
     elsif <condition-B> then
@@ -57,7 +57,7 @@ if:
     end if;
 
 
-case:
+case:::
     case state is
         when IDLE =>
             -- IDLE state actions
@@ -69,13 +69,13 @@ case:
             -- Default actions
     end case;
 
-when:
+when:::
     C <= A when SEL = "00" else
          B when SEL = "01" else
          '0';    
 
 
-doc:
+doc:::
     --doc init
     --
     --#### Description
@@ -112,7 +112,7 @@ doc:
     --Provide a detailed description of the module's functionality. Include information about how it processes inputs, generates outputs, and any internal operations or state changes.
     --
     --#### State Machine (if applicable)
-    --Describe the state machine used within the module, including:
+    --Describe the state machine used within the module, including:::
     --- States
     --- Transitions
     --- Conditions for transitions

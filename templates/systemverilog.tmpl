@@ -1,4 +1,4 @@
-clock_generator:
+clock_generator:::
     module clock_generator(
         output bit clk,
         input time period,
@@ -20,7 +20,7 @@ clock_generator:
     clock_generator clk_gen1(.clk(clk1), .period(clk1_period), .phase_shift(clk1_phase_shift));
 
 
-reset_generator:
+reset_generator:::
     module reset_generator(
         output bit rst,
         input time initial_delay = 0ns,

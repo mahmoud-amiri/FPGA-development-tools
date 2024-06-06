@@ -1,7 +1,7 @@
 import argparse
 from functions.init import init
 from functions.git import commit, update_submodule
-from functions.template import template, get_template
+from functions.template import template
 from functions.cheatsheet import cheatsheet
 from functions.comment_readme import auto_comment_gen, auto_readme_gen
 from functions.yaml_assistant import yaml_assistant
@@ -29,18 +29,18 @@ def main():
     upsub_parser.add_argument('--main_repo_branch', type=str, default='main', help='Branch to update in the main repository')
 
     template_parser = subparsers.add_parser('template', help='Copy a template to the clipboard')
-    template_parser.add_argument('-vhdl', dest='template_type', action='store_const', const='vhdl', help='VHDL template')
-    template_parser.add_argument('-verilog', dest='template_type', action='store_const', const='verilog', help='Verilog template')
-    template_parser.add_argument('-systemverilog', dest='template_type', action='store_const', const='systemverilog', help='Systemverilog template')
-    template_parser.add_argument('-assertion', dest='template_type', action='store_const', const='assertion', help='assertion template')
-    template_parser.add_argument('-ovl', dest='template_type', action='store_const', const='ovl', help='ovl template')
-    template_parser.add_argument('-uvm', dest='template_type', action='store_const', const='uvm', help='uvm template')
-    template_parser.add_argument('-coverage', dest='template_type', action='store_const', const='coverage', help='coverage template')
-    template_parser.add_argument('-c', dest='template_type', action='store_const', const='c', help='c template')
-    template_parser.add_argument('-cpp', dest='template_type', action='store_const', const='cpp', help='cpp template')
-    template_parser.add_argument('-python', dest='template_type', action='store_const', const='python', help='python template')
-    template_parser.add_argument('-tcl', dest='template_type', action='store_const', const='tcl', help='tcl template')
-    template_parser.add_argument('template_name', type=str, help='Name of the template to copy')
+    # template_parser.add_argument('-vhdl', dest='template_type', action='store_const', const='vhdl', help='VHDL template')
+    # template_parser.add_argument('-verilog', dest='template_type', action='store_const', const='verilog', help='Verilog template')
+    # template_parser.add_argument('-systemverilog', dest='template_type', action='store_const', const='systemverilog', help='Systemverilog template')
+    # template_parser.add_argument('-assertion', dest='template_type', action='store_const', const='assertion', help='assertion template')
+    # template_parser.add_argument('-ovl', dest='template_type', action='store_const', const='ovl', help='ovl template')
+    # template_parser.add_argument('-uvm', dest='template_type', action='store_const', const='uvm', help='uvm template')
+    # template_parser.add_argument('-coverage', dest='template_type', action='store_const', const='coverage', help='coverage template')
+    # template_parser.add_argument('-c', dest='template_type', action='store_const', const='c', help='c template')
+    # template_parser.add_argument('-cpp', dest='template_type', action='store_const', const='cpp', help='cpp template')
+    # template_parser.add_argument('-python', dest='template_type', action='store_const', const='python', help='python template')
+    # template_parser.add_argument('-tcl', dest='template_type', action='store_const', const='tcl', help='tcl template')
+    # template_parser.add_argument('template_name', type=str, help='Name of the template to copy')
 
     cheatsheet_parser = subparsers.add_parser('cheatsheet', help='Open README.md in VS Code')
 
@@ -74,7 +74,8 @@ def main():
         elif args.subcommand == 'upsub':
             update_submodule(args.submodule_path, args.main_repo_path, args.submodule_branch, args.main_repo_branch)
     elif args.command == 'template':
-        template(args.template_type, args.template_name)
+        # template(args.template_type, args.template_name)
+        template()
     elif args.command == 'cheatsheet':
         cheatsheet()
     elif args.command == 'comment':
